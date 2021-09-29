@@ -21,8 +21,8 @@ public class Breakout extends WindowProgram {
     private static final int HEIGHT = APPLICATION_HEIGHT;
 
     /** Dimensions of the paddle */
-    private static final int PADDLE_WIDTH = 60;
-    private static final int PADDLE_HEIGHT = 10;
+    private static final double PADDLE_WIDTH = 60;
+    private static final double PADDLE_HEIGHT = 10;
 
     /** Offset of the paddle up from the bottom */
     private static final int PADDLE_Y_OFFSET = 30;
@@ -31,7 +31,7 @@ public class Breakout extends WindowProgram {
     private static final int NBRICKS_PER_ROW = 10;
 
     /** Number of rows of bricks */
-    private static final int NBRICK_ROWS = 10;
+    private static final int NBRICK_ROWS = 10; //Can do up to x2 rows
 
     /** Separation between bricks */
     private static final int BRICK_SEP = 4;
@@ -52,76 +52,83 @@ public class Breakout extends WindowProgram {
     /** Number of turns */
     private static final int NTURNS = 3;
 
+    /** Paddle Color*/
+    private static final Color PADDLE_COLOR = Color.BLACK;
+
+    /** Bricks row Color */
+    private static final Color[] BRICKS_COLOR = {Color.RED,Color.RED, Color.ORANGE, Color.ORANGE, Color.YELLOW, Color.YELLOW, Color.GREEN, Color.GREEN, Color.CYAN, Color.CYAN};
+
     public void run() {
+
+        /** Возможно перенести цвет в константы */
+
         //ball, paddle, brick
         /* You fill this in, along with any subsidiary methods */
-
+        addMouseListeners();
         setupGame();
         playGame();
         buildBricks();
-
-        println();
+        add_Paddle();
+        add_Ball();
     }
 
     private void setupGame() {
+
     }
 
     private void playGame() {
     }
 
-    private void paddle(){
+    private void add_Paddle(){
+        double paddle_X = getWidth()/2.0 - PADDLE_WIDTH / 2.0;
+        double paddle_Y = getHeight() - PADDLE_Y_OFFSET;
+        drawRectangle(paddle_X, paddle_Y, PADDLE_WIDTH, PADDLE_HEIGHT, PADDLE_COLOR);
+    }
 
+    private void add_Ball(){
+        double ball_X = getWidth()/2.0 - BALL_RADIUS/2.0;
+        double ball_Y = getHeight()/2.0 - BALL_RADIUS/2.0;
+        GOval ball = new GOval(ball_X, ball_Y, 2 * BALL_RADIUS, 2 * BALL_RADIUS);
+        ball.setFilled(true);
+        ball.setFillColor(Color.BLACK);
+        add(ball);
     }
 
     private void buildBricks(){
-
         //i - rows
         //j - cols
-        for (int i=0; i < NBRICK_ROWS; i++){
+        int bricksDefaultColor = 0;
 
+        for (int i=0; i < NBRICK_ROWS; i++){
+            bricksDefaultColor++;
             for (int j=0; j < NBRICKS_PER_ROW; j++){
 
-                GRect brick = new GRect( (BRICK_WIDTH+BRICK_SEP) * j, BRICK_Y_OFFSET + (BRICK_HEIGHT + BRICK_SEP) * i, BRICK_WIDTH, BRICK_HEIGHT);
-                brick.setFilled(true);
-                switch (i) {
-                    case 0:
-                        brick.setColor(Color.RED);
-                        break;
-                    case 1:
-                        brick.setColor(Color.RED);
-                        break;
-                    case 2:
-                        brick.setColor(Color.ORANGE);
-                        break;
-                    case 3:
-                        brick.setColor(Color.ORANGE);
-                        break;
-                    case 4:
-                        brick.setColor(Color.YELLOW);
-                        break;
-                    case 5:
-                        brick.setColor(Color.YELLOW);
-                        break;
-                    case 6:
-                        brick.setColor(Color.GREEN);
-                        break;
-                    case 7:
-                        brick.setColor(Color.GREEN);
-                        break;
-                    case 8:
-                        brick.setColor(Color.CYAN);
-                        break;
-                    case 9:
-                        brick.setColor(Color.CYAN);
-                        break;
-                    default:
-                        break;
+                double brick_X = (BRICK_WIDTH+BRICK_SEP) * j;
+                double brick_Y = BRICK_Y_OFFSET + (BRICK_HEIGHT + BRICK_SEP) * i;
+                if (i<BRICKS_COLOR.length){
+                    drawRectangle(brick_X, brick_Y, BRICK_WIDTH, BRICK_HEIGHT, BRICKS_COLOR[i]);
                 }
-                add(brick);
+                else {
+                    if (bricksDefaultColor > i) {
+                        bricksDefaultColor = bricksDefaultColor - i;
+                    }
+                    drawRectangle(brick_X, brick_Y, BRICK_WIDTH, BRICK_HEIGHT, BRICKS_COLOR[bricksDefaultColor-1]);
 
                 }
+
+
+
+
+                }
+
             }
         }
 
+    private void drawRectangle(double x,double y,double width,double height, Color rectColor){
+        GRect rectangle = new GRect(x, y, width, height);
+        rectangle.setFilled(true);
+        rectangle.setColor(rectColor);
+        add(rectangle);
+    }
     }
 
